@@ -26,7 +26,8 @@ Create a new method under “{id}” resource “GET”: select lambda_proxy opt
     * Change bucket policy to allow access, and then set as serverless host.
 
 **Phase 3**
-
+* Merged DMA data to the Events data by modifying and adding code to the PySpark script / job from phase 1.
+* Ran the glue crawler to get the new table containing the combined data 
 
 **Phase 4**
 * Merged data of “DMA-zip” with data of “Events.jason” based on the zip-code. Filling missing values with "Unknown". There are some duplicates in the event name so I drop duplicates across the event name and state except for the first occurrence
@@ -35,5 +36,12 @@ Created a new column called “info” which contains event description; event n
 * Computed the SVDs and convert data to latent space. The sparse algorithm (sparse.linalg.svds) works fine for sparse matrices. K as the number of singular values is 100
 * Built a function that computes a set of 5 most similar events to the requested event. The function essentially looks at the event’s matrix (73545, 100) in that latent feature space. The distance metric will be cosine distance in latent space.
 * For any requested event name, the function returns 5 recommended events in the same geographic area with basic details such as the event name, description, venue name and address. The input can be event name or event id.
+* Created another chart with the event ids and a list with their associated event ids, then joined them to the data like in Phase 3.
 
 **Phase 5**
+We tried implementing date logic to filter out the events that had already passed but haven’t succeeded yet.
+
+**Future work**:
+* Improve our recommendation engine by trying out different ML algorithms such as clustering, KNN and Neural Networks 
+* Use other approaches such as “Collaborative filtering” and “Hybrid filtering” based on availability of data . 
+
