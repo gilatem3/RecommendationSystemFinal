@@ -92,7 +92,7 @@ def lambda_handler(event, context):
                 values = []
                 for c in row['Data']:
                     if c.keys():
-                        if c[u'VarCharValue'] == '':
+                        if c[u'VarCharValue'] == '': # If there are missing values, replace with 'unknown'
                             values.append('unknown')
                         else:
                             values.append(c[u'VarCharValue'].encode('ascii','ignore'))

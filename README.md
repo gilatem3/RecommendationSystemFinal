@@ -13,9 +13,10 @@
 
 **Phase 2**
 * Part 1: 
-    * Create lambda code to read Athena SQL queries and input data into DynamoDB. Lambda code invoked by uploading file to a specified S3 bucket.
+    * Create lambda code to read Athena SQL queries and input data into DynamoDB. Lambda code invoked by uploading file to a specified S3 bucket. The code was provided by Mr. Young. We altered the script by taking care of missing values and replacing them with "unknown" so they can be entered into DynamoDB properly. To invoke this code we uploaded a file into s3.
+    * A challenge we had was when we ran this code was our credits would quickly be used up. We only uploaded a few instances into DynamoDB so we wouldn't run out of credits.
 * Part2: 
-    * Create lambda function to read DynamoDB data based on API Gateway Invoked link event (GET event/{id}) where {id} is replaced with an event_id. 
+    * Create lambda function to read DynamoDB data based on API Gateway Invoked link event (GET event/{id}) where {id} is replaced with an event_id. This Lambda code was also from Mr. Young. The alteration we made was turning the list of recommended event id's from string to Python list type.
     * In API Gateway, create a new API, then create new Resource “event” and another resource “{id}”, select PROXY option.
 Create a new method under “{id}” resource “GET”: select lambda_proxy option and choose lambda function created. 
     * Select OPTION under “{id}”, then Integration Request > Mapping Templates > Create a new template with JSON format: {"id": "$input.params('id')" }. 
@@ -31,11 +32,12 @@ Create a new method under “{id}” resource “GET”: select lambda_proxy opt
 
 **Phase 4**
 * Merged data of “DMA-zip” with data of “Events.jason” based on the zip-code. Filling missing values with "Unknown". There are some duplicates in the event name so I drop duplicates across the event name and state except for the first occurrence
-Created a new column called “info” which contains event description; event name; state; dma code within each record. These are the basic details of each event.
+* Created a new column called “info” which contains event description; event name; organization name; state; dma code within each record. These are the basic details of each event.
 * Applied TfidfVectorizer function to transforms text of ”info” to feature vectors that can be used as input to estimator. Number of features: 200894 for each of 73545 events
 * Computed the SVDs and convert data to latent space. The sparse algorithm (sparse.linalg.svds) works fine for sparse matrices. K as the number of singular values is 100
 * Built a function that computes a set of 5 most similar events to the requested event. The function essentially looks at the event’s matrix (73545, 100) in that latent feature space. The distance metric will be cosine distance in latent space.
-* For any requested event name, the function returns 5 recommended events in the same geographic area with basic details such as the event name, description, venue name and address. The input can be event name or event id.
+For any requested event name, the function returns 5 recommended events in the same geographic area with basic details such as the event name, description, venue name and address. The input can be event name or event id.
+
 * Created another chart with the event ids and a list with their associated event ids, then joined them to the data like in Phase 3.
 
 **Phase 5**
